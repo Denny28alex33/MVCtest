@@ -13,6 +13,6 @@ public class Category
     [DisplayName("類別名稱")]
     public string Name { get; set; }
     [DisplayName("顯示順序")]
-    [Range(1,100 ,ErrorMessage = "輸入應該要在1-100之間")]
+    [Range(1,200 ,ErrorMessage = "輸入應該要在1-200之間")]
     public int DisplayOrder { get; set; }
 }

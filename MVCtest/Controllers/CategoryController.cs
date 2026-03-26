@@ -66,6 +66,7 @@ namespace MVCtest.Controllers
             {
                 _db.Categories.Update(obj);
                 _db.SaveChanges();
+                TempData["success"] = "類別更新成功";
                 return RedirectToAction("Index");
             }
 
@@ -100,6 +101,7 @@ namespace MVCtest.Controllers
 
             _db.Categories.Remove(obj);
             _db.SaveChanges();
+            TempData["success"] = "類別刪除成功";
             return RedirectToAction("Index");
         }
 
