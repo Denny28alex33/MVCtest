@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MVCtest.DataAccess.Data;
+using MVCtest.DataAccess.Repository.IRepository;
 using MVCtest.Models;
 
 
@@ -8,17 +9,17 @@ namespace MVCtest.Controllers
     public class CategoryController : Controller
     {
         
-        private readonly ApplicationDbContext _db;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CategoryController(ApplicationDbContext db)
+        public CategoryController(IUnitOfWork unitOfWork)
         {
-            _db = db;
+            _unitOfWork = unitOfWork;
         }
         // GET: CategoryController
         public IActionResult Index()
         {
 
-            List<Category> objCategoryList = _db.Categories.ToList();
+            List<Category> objCategoryList = _unitOfWork.Category.GetAll().ToList();
             return View(objCategoryList);
         }
 
@@ -35,8 +36,8 @@ namespace MVCtest.Controllers
             }
             if (ModelState.IsValid)
             {
-                _db.Categories.Add(obj);
-                _db.SaveChanges();
+                _unitOfWork.Category.Add(obj);
+                _unitOfWork.save();
                 TempData["success"] = "類別新增成功";
                 return RedirectToAction("Index");
             }
@@ -51,7 +52,7 @@ namespace MVCtest.Controllers
                 return NotFound();
             }
 
-            Category? categoryFromDb = _db.Categories.Find(id);
+            Category? categoryFromDb = _unitOfWork.Category.Get(u =>u.Id==id);
             if (categoryFromDb == null)
             {
                 return NotFound();
@@ -65,8 +66,8 @@ namespace MVCtest.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Categories.Update(obj);
-                _db.SaveChanges();
+                _unitOfWork.Category.Update(obj);
+                _unitOfWork.save();
                 TempData["success"] = "類別更新成功";
                 return RedirectToAction("Index");
             }
@@ -82,7 +83,7 @@ namespace MVCtest.Controllers
                 return NotFound();
             }
 
-            Category categoryFromDb = _db.Categories.Find(id);
+            Category categoryFromDb = _unitOfWork.Category.Get(u => u.Id==id);
             if (categoryFromDb == null)
             {
                 return NotFound();
@@ -94,14 +95,14 @@ namespace MVCtest.Controllers
         [HttpPost, ActionName("Delete")]
         public IActionResult DeletePOST(int? id)
         {
-            Category? obj = _db.Categories.Find(id);
+            Category? obj = _unitOfWork.Category.Get(u=>u.Id==id);
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _db.Categories.Remove(obj);
-            _db.SaveChanges();
+            _unitOfWork.Category.Remove(obj);
+            _unitOfWork.save();
             TempData["success"] = "類別刪除成功";
             return RedirectToAction("Index");
         }
