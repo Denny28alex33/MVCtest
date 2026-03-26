@@ -36,6 +36,7 @@ namespace MVCtest.Controllers
             {
                 _db.Categories.Add(obj);
                 _db.SaveChanges();
+                TempData["success"] = "類別新增成功";
                 return RedirectToAction("Index");
             }
 

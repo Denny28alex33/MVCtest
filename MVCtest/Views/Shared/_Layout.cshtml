@@ -1,6 +1,8 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel = "stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css
+"/>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - MVCtest</title>
@@ -37,6 +39,7 @@
 </header>
 <div class="container">
     <main role="main" class="pb-3">
+        <partial name="_Notification"/>
         @RenderBody()
     </main>
 </div>
