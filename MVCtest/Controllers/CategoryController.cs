@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using MVCtest.Data;
+using MVCtest.DataAccess.Data;
 using MVCtest.Models;
+
 
 namespace MVCtest.Controllers
 {

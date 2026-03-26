@@ -1,6 +1,6 @@
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Options;
-    using MVCtest.Data;
+    using MVCtest.DataAccess.Data;
 
     var builder = WebApplication.CreateBuilder(args);
 
