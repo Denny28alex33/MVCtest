@@ -11,11 +11,11 @@ using MVCtest.Models;
 
 namespace MVCtest.DataAccess.Repository;
 
-public class CategoryRepository : Repository<Category>, ICategoryRepository
+public class ProdustRepository : Repository<Category>, ICategoryRepository
 {
     private ApplicationDbContext _db;
 
-    public CategoryRepository(ApplicationDbContext db) : base(db)
+    public ProdustRepository(ApplicationDbContext db) : base(db)
     {
         _db = db;
     }

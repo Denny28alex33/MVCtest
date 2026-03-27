@@ -12,7 +12,7 @@ using MVCtest.Models;
 namespace MVCtest.DataAccess.Repository.IRepository;
 
 
-public interface IProdustRepository:IRepository<Category>
+public interface ICategoryRepository:IRepository<Category>
 {
     void Update(Category obj);
     
