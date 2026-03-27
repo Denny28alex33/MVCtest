@@ -11,18 +11,18 @@ using MVCtest.Models;
 
 namespace MVCtest.DataAccess.Repository;
 
-public class ProdustRepository : Repository<Category>, ICategoryRepository
+public class ProductRepository : Repository<Product>,IProductRepository
 {
     private ApplicationDbContext _db;
 
-    public ProdustRepository(ApplicationDbContext db) : base(db)
+    public ProductRepository(ApplicationDbContext db) : base(db)
     {
         _db = db;
     }
 
-    public void Update(Category obj)
+    public void Update(Product obj)
     {
-        _db.Categories.Update(obj);
+        _db.Products.Update(obj);
     }
 
     

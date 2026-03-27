@@ -12,7 +12,7 @@ public class ApplicationDbContext:DbContext
         
     }
     public DbSet<Category>Categories { get; set; }
-    public DbSet<Category>Products { get; set; }
+    public DbSet<Product>Products { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Category>().HasData(
@@ -21,9 +21,9 @@ public class ApplicationDbContext:DbContext
             new Category { Id = 3, Name = "咖啡", DisplayOrder = 3 }
         );
         modelBuilder.Entity<Product>().HasData(
-            new Product{ID = 1,Name = "台灣水果茶",Size = "大杯",Description = "天然果飲，迷人多變",Price = 60},
-            new Product{ID = 2,Name = "鐵觀音",Size = "中杯",Description = "品鐵觀音，享人生的味道",Price = 35},
-            new Product{ID = 3,Name = "美式咖啡",Size = "中杯",Description = "用咖啡體悟悠閑時光",Price = 50}
+            new Product{ID = 1,Name = "台灣水果茶",Size = "大杯",Description = "天然果飲，迷人多變",Price = 60,CategoryId = 1,ImageUrl =""},
+            new Product{ID = 2,Name = "鐵觀音",Size = "中杯",Description = "品鐵觀音，享人生的味道",Price = 35,CategoryId = 2,ImageUrl =""},
+            new Product{ID = 3,Name = "美式咖啡",Size = "中杯",Description = "用咖啡體悟悠閑時光",Price = 50,CategoryId = 3,ImageUrl =""}
         );
     }
 }

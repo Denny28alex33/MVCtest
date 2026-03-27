@@ -31,6 +31,8 @@
 
     app.MapStaticAssets();
 
+    
+    
     app.MapControllerRoute(
             name: "default",
             pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}")
