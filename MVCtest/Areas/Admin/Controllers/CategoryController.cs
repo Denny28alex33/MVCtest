@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using MVCtest.DataAccess.Data;
 using MVCtest.DataAccess.Repository.IRepository;
 using MVCtest.Models;
 
-
-namespace MVCtest.Controllers
+namespace MVCtest.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         

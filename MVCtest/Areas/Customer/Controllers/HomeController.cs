@@ -2,8 +2,9 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using MVCtest.Models;
 
-namespace MVCtest.Controllers;
+namespace MVCtest.Areas.Customer.Controllers;
 
+[Area("Customer")]
 public class HomeController : Controller
 {
     public IActionResult Index()
