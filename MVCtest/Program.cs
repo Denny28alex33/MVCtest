@@ -3,6 +3,7 @@
     using MVCtest.DataAccess.Data;
     using MVCtest.DataAccess.Repository;
     using MVCtest.DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Identity;
 
     var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,10 @@
     // 將原本的 UseSqlServer 改為 UseNpgsql
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+    builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
+
+    builder.Services.AddRazorPages();
 
     builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
     var app = builder.Build();
@@ -26,9 +31,11 @@
     
     app.UseHttpsRedirection();
     app.UseRouting();
-
+    app.UseAuthentication();
     app.UseAuthorization();
 
+    app.UseAuthorization();
+    app.MapRazorPages();
     app.MapStaticAssets();
 
     
