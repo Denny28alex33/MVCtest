@@ -89,7 +89,7 @@ namespace MVCtest.Areas.Admin.Controllers
                     _unitOfWork.Product.Update(productVm.Product);
                 }
                 _unitOfWork.save();
-                TempData["success"] = "產品新增成宮！";
+                TempData["success"] = "產品新增成功！";
                 return RedirectToAction("Index");
 
                 // 🌟 修正 3：補上 Upsert 的判斷靈魂！(有 ID 是更新，沒 ID 是新增)
@@ -152,36 +152,66 @@ namespace MVCtest.Areas.Admin.Controllers
         // }
 
         
+        // public IActionResult Delete(int? id)
+        // {
+        //     if (id == null || id == 0)
+        //     {
+        //         return NotFound();
+        //     }
+        //
+        //     Product productFromDb = _unitOfWork.Product.Get(u => u.ID==id);
+        //     if (productFromDb == null)
+        //     {
+        //         return NotFound();
+        //     }
+        //
+        //     return View(productFromDb);
+        // }
+        //
+        // [HttpPost, ActionName("Delete")]
+        // public IActionResult DeletePOST(int? id)
+        // {
+        //     Product? obj = _unitOfWork.Product.Get(u=>u.ID==id);
+        //     if (obj == null)
+        //     {
+        //         return NotFound();
+        //     }
+        //
+        //     _unitOfWork.Product.Remove(obj);
+        //     _unitOfWork.save();
+        //     TempData["success"] = "類別刪除成功";
+        //     return RedirectToAction("Index");
+        // }
+
+        #region API CALLS
+
+        [HttpGet]
+        public IActionResult GetALL()
+        {
+            List<Product> objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+            return Json(new { data = objProductList }
+        );
+    }
+        [HttpDelete]
         public IActionResult Delete(int? id)
         {
-            if (id == null || id == 0)
+            var productToBeDeleted = _unitOfWork.Product.Get(u => u.ID == id);
+            if (productToBeDeleted == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "刪除失敗" });
             }
 
-            Product productFromDb = _unitOfWork.Product.Get(u => u.ID==id);
-            if (productFromDb == null)
+            var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath,
+                productToBeDeleted.ImageUrl.TrimStart('\\'));
+            if (System.IO.File.Exists(oldImagePath))
             {
-                return NotFound();
+                System.IO.File.Delete(oldImagePath);
             }
-
-            return View(productFromDb);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePOST(int? id)
-        {
-            Product? obj = _unitOfWork.Product.Get(u=>u.ID==id);
-            if (obj == null)
-            {
-                return NotFound();
-            }
-
-            _unitOfWork.Product.Remove(obj);
+            _unitOfWork.Product.Remove(productToBeDeleted);
             _unitOfWork.save();
-            TempData["success"] = "類別刪除成功";
-            return RedirectToAction("Index");
+            return Json(new { success = true, message = "新增成功" });
         }
+        #endregion
 
     }
 }
