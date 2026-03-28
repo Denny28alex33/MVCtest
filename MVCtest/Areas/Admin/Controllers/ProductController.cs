@@ -13,15 +13,17 @@ namespace MVCtest.Areas.Admin.Controllers
     {
         
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductController(IUnitOfWork unitOfWork)
+        public ProductController(IUnitOfWork unitOfWork,IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
         }
         // GET: CategoryController
         public IActionResult Index()
         {
-            List<Product> objCategoryList = _unitOfWork.Product.GetAll().ToList();
+            List<Product> objCategoryList = _unitOfWork.Product.GetAll(includeProperties:"Category").ToList();
             return View(objCategoryList);
         }
 
@@ -48,17 +50,66 @@ namespace MVCtest.Areas.Admin.Controllers
             
         }
         [HttpPost]
-        public IActionResult Upsert(ProductVM productVm,IFormFile? file)
+        public IActionResult Upsert(ProductVM productVm, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
-                _unitOfWork.Product.Add(productVm.Product);
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                if (file != null)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            
+                    // 🌟 修正 1：Mac 適用的路徑寫法 (使用正斜線 / )
+                    string productPath = Path.Combine(wwwRootPath, @"images/product");
+
+                    if (!string.IsNullOrEmpty(productVm.Product.ImageUrl))
+                    {
+                        var oldImagePath = Path.Combine(wwwRootPath, productVm.Product.ImageUrl.TrimStart('\\'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+            
+                    using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+
+                    // 🌟 修正 2：網頁 URL 也要用正斜線 /
+                    productVm.Product.ImageUrl = @"/images/product/" + fileName; 
+                }
+
+                if (productVm.Product.ID == 0)
+                {
+                    _unitOfWork.Product.Add(productVm.Product);
+                }
+                else
+                {
+                    _unitOfWork.Product.Update(productVm.Product);
+                }
                 _unitOfWork.save();
-                TempData["success"] = "類別新增成功";
+                TempData["success"] = "產品新增成宮！";
+                return RedirectToAction("Index");
+
+                // 🌟 修正 3：補上 Upsert 的判斷靈魂！(有 ID 是更新，沒 ID 是新增)
+                if (productVm.Product.ID == 0)
+                {
+                    _unitOfWork.Product.Add(productVm.Product);
+                    TempData["success"] = "產品新增成功"; // 順便幫你改掉錯字
+                }
+                else
+                {
+                    _unitOfWork.Product.Update(productVm.Product);
+                    TempData["success"] = "產品更新成功";
+                }
+        
+                _unitOfWork.save();
                 return RedirectToAction("Index");
             }
             else
             {
+                // 萬一驗證失敗，要把下拉選單重新準備好送回畫面上
                 productVm.CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
                 {
                     Text = u.Name,
@@ -66,9 +117,9 @@ namespace MVCtest.Areas.Admin.Controllers
                 });
                 return View(productVm);
             }
-
-            return View();
+            // 🌟 修正 4：移除了最底下那個永遠執行不到的 return View();
         }
+        
 
         // public IActionResult Edit(int? id)
         // {

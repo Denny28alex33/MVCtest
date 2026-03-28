@@ -22,7 +22,20 @@ public class ProductRepository : Repository<Product>,IProductRepository
 
     public void Update(Product obj)
     {
-        _db.Products.Update(obj);
+        var objFromDb = _db.Products.FirstOrDefault(u => u.ID == obj.ID);
+        if (objFromDb!=null)
+        {
+            objFromDb.Name = obj.Name;
+            objFromDb.Size = obj.Size;
+            objFromDb.Price = obj.Price;
+            objFromDb.Description = obj.Description;
+            objFromDb.CategoryId = obj.CategoryId;
+            if (objFromDb.ImageUrl != null)
+            {
+                objFromDb.ImageUrl = obj.ImageUrl;
+            }
+            
+        }
     }
 
     
