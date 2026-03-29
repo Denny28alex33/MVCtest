@@ -1,14 +1,17 @@
 using System.Net.Mime;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MVCtest.DataAccess.Repository.IRepository;
 using MVCtest.Models;
 using MVCtest.DataAccess.Data;
 using MVCtest.Models.ViewModels;
+using MVCtest.Utility;
 
 namespace MVCtest.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(SD.Role_Admin)]
     public class ProductController : Controller
     {
         
